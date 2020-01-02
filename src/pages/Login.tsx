@@ -6,9 +6,10 @@ import { LoginBody, LoginSuccess, LoginError } from "./api/Login";
 interface Props {
   callbackUrl?: string;
   clientId?: string;
+  code?: string;
 }
 
-const LoginPage: NextPage<Props> = ({ callbackUrl, clientId }) => {
+const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -30,6 +31,12 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId }) => {
     );
   }
 
+  if (code == null) {
+    return (
+      <h1>There is a problem with the Code. Authentication cannot continue.</h1>
+    );
+  }
+
   return (
     <form
       onSubmit={async (event) => {
@@ -41,6 +48,9 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId }) => {
           >("/api/login", {
             email,
             password,
+            callbackUrl,
+            clientId,
+            code,
           });
           window.location.assign(`${callbackUrl}?token=${response.data.token}`);
         } catch (error) {
@@ -70,10 +80,11 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId }) => {
 };
 
 LoginPage.getInitialProps = ({ query }): Props => {
-  const { clientId, callbackUrl } = query;
+  const { clientId, callbackUrl, code } = query;
   return {
     callbackUrl: typeof callbackUrl === "string" ? callbackUrl : undefined,
     clientId: typeof clientId === "string" ? clientId : undefined,
+    code: typeof code === "string" ? code : undefined,
   };
 };
 

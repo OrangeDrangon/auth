@@ -1,9 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
+import { validateUser } from "../../utils/validateUser";
+import { validateClient } from "../../utils/validateClient";
+import { validateCode } from "../../utils/validateCode";
 
 export interface LoginBody {
   email: string;
   password: string;
+  clientId: string;
+  callbackUrl: string;
+  code: string;
 }
 
 export interface LoginError {
@@ -17,23 +23,50 @@ export interface LoginSuccess {
 
 export type LoginResponse = LoginError | LoginSuccess;
 
-export default (req: NextApiRequest, res: NextApiResponse<LoginResponse>) => {
+export default async (
+  req: NextApiRequest,
+  res: NextApiResponse<LoginResponse>
+) => {
   if (req.method === "POST") {
-    const { email, password }: Partial<LoginBody> = req.body;
+    const {
+      email,
+      password,
+      clientId,
+      callbackUrl,
+      code,
+    }: Partial<LoginBody> = req.body;
 
-    // validate email and password
-    if (
-      email == null ||
-      (email != null && email.length < 5) ||
-      password == null ||
-      (password != null && password.length < 5)
-    ) {
-      return res.status(400).json({ error: "Missing password or email." });
+    // validate email, password, clientid, and callbackurl
+    const validate = await Promise.all([
+      validateUser(email, password),
+      validateClient(clientId, callbackUrl),
+      validateCode(code),
+    ]);
+
+    let valid = true;
+    const errorMessage: string[] = [];
+    validate.forEach((elm, index) => {
+      valid = valid && !!elm;
+      if (!elm) {
+        switch (index) {
+          case 0:
+            errorMessage.push("Invalid Username or Password.");
+            break;
+          case 1:
+            errorMessage.push("Invalid Client Id or Callback URL.");
+            break;
+          case 2:
+            errorMessage.push("Invalid code method.");
+            break;
+          default:
+            break;
+        }
+      }
+    });
+
+    if (!valid) {
+      return res.status(400).json({ error: errorMessage.join(" ") });
     }
-
-    // check if in db
-    // ...
-    // ...
 
     const user = { email, name: "John", scopes: ["email", "name"] };
 
