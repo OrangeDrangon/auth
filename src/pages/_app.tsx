@@ -9,6 +9,7 @@ function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {
           #__next {
             height: 100vh;
             width: 100vw;
+            overflow-x: hidden;
           }
           @font-face {
             font-family: "Roboto";
@@ -24,6 +25,14 @@ function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+          }
+
+          h1 {
+            font-size: 32px;
+          }
+
+          h2 {
+            font-size: 24px;
           }
         `}
       </style>

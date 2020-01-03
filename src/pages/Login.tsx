@@ -5,10 +5,11 @@ import { LoginBody, LoginSuccess, LoginError } from "./api/login";
 import { validate as validateEmail } from "email-validator";
 import { useForm, FormContext } from "react-hook-form";
 import { Input } from "../components/Input";
-import { Header } from "../components/Header";
+import { HeaderFooter } from "../components/HeaderFooter";
 import { Button } from "../components/Button";
 import Link from "next/link";
 import { primaryColor } from "../utils/theme";
+import { Card } from "../components/Card";
 
 interface Props {
   callbackUrl?: string;
@@ -71,67 +72,69 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
   }
 
   return (
-    <Header>
-      <FormContext {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={true}>
-          <h1>Login</h1>
-          {errorMessage != null ? <div>{errorMessage}</div> : null}
-          <Input
-            name="email"
-            type="email"
-            placeholder="Email"
-            validate={(email) =>
-              validateEmail(email) || "Please enter a valid email."
-            }
-          />
-          <Input name="password" placeholder="Password" type="password" />
+    <HeaderFooter
+      contentProps={{
+        style: { alignSelf: "center", justifyContent: "center" },
+      }}
+    >
+      <Card header={<h1>Login</h1>}>
+        <FormContext {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={true}>
+            {errorMessage != null ? <div>{errorMessage}</div> : null}
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email"
+              validate={(email) =>
+                validateEmail(email) || "Please enter a valid email."
+              }
+            />
+            <Input name="password" placeholder="Password" type="password" />
 
-          <div className="buttons">
-            <Button
-              type="submit"
-              cover={true}
-              disabled={Object.keys(methods.errors).length > 0}
-            >
-              Login
-            </Button>
-            <div className="fill"></div>
-            <Link href="/register">
+            <div className="buttons">
               <Button
-                style={{
-                  textDecoration: "underline",
-                  backgroundColor: primaryColor.dark.color,
-                }}
+                type="submit"
+                cover={true}
+                disabled={Object.keys(methods.errors).length > 0}
               >
-                Register
+                Login
               </Button>
-            </Link>
-          </div>
+              <div className="fill"></div>
+              <Link href="/register">
+                <Button
+                  style={{
+                    textDecoration: "underline",
+                    backgroundColor: primaryColor.dark.color,
+                  }}
+                >
+                  Register
+                </Button>
+              </Link>
+            </div>
 
-          <style jsx>{`
-            form {
-              display: flex;
-              flex-flow: column;
-              justify-content: center;
-              align-items: center;
-            }
+            <style jsx>{`
+              form {
+                display: flex;
+                flex-flow: column;
+                justify-content: center;
+                align-items: center;
+                width: 300px;
+              }
 
-            h1 {
-              font-size: 32px;
-            }
+              .buttons {
+                display: flex;
+                flex-flow: row-reverse;
+                width: 100%;
+              }
 
-            .buttons {
-              display: flex;
-              flex-flow: row-reverse;
-              width: 100%;
-            }
-
-            .fill {
-              flex: 1;
-            }
-          `}</style>
-        </form>
-      </FormContext>
-    </Header>
+              .fill {
+                flex: 1;
+              }
+            `}</style>
+          </form>
+        </FormContext>
+      </Card>
+    </HeaderFooter>
   );
 };
 

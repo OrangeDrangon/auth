@@ -1,14 +1,18 @@
 import React from "react";
 import { primaryColor } from "../utils/theme";
 
-interface Props {}
+type SectionProps = JSX.IntrinsicElements["section"];
 
-export const Header: React.FunctionComponent<React.PropsWithChildren<
-  Props
->> = ({ children }) => {
+interface Props {
+  contentProps?: SectionProps;
+}
+
+export const HeaderFooter: React.FunctionComponent<React.PropsWithChildren<
+  Props & Props
+>> = ({ children, contentProps }) => {
   return (
     <div className="container">
-      <div className="head">
+      <header>
         <img src="/images/neptune.png" alt="" className="neptune" />
         <h1>kmr.pw</h1>
         <div className="fill"></div>
@@ -20,8 +24,9 @@ export const Header: React.FunctionComponent<React.PropsWithChildren<
         >
           <img src="/images/github.svg" alt="Github" />
         </a>
-      </div>
-      {children}
+      </header>
+      <section {...contentProps}>{children}</section>
+      <footer>Kyle Rosenberg</footer>
       <style jsx>{`
         .container {
           height: 100vh;
@@ -29,7 +34,7 @@ export const Header: React.FunctionComponent<React.PropsWithChildren<
           display: flex;
           flex-flow: column;
         }
-        .head {
+        header {
           height: 50px;
           width: 100%;
           background-color: ${primaryColor.color};
@@ -37,7 +42,7 @@ export const Header: React.FunctionComponent<React.PropsWithChildren<
           display: flex;
           flex-flow: row;
           align-items: center;
-          margin-bottom: 10px;
+          position: fixed;
         }
 
         .neptune {
@@ -66,6 +71,18 @@ export const Header: React.FunctionComponent<React.PropsWithChildren<
 
         .github:hover {
           box-shadow: 1px 3px 8px rgba(255, 255, 255, 0.35);
+        }
+
+        section {
+          display: flex;
+          flex-flow: column;
+          margin-top: 50px;
+          height: 100%;
+        }
+
+        footer {
+          position: absolute;
+          bottom: -50px;
         }
       `}</style>
     </div>

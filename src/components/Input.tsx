@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { secondaryColor, primaryColor } from "../utils/theme";
+import { primaryColor } from "../utils/theme";
 import { ErrorMessage } from "./ErrorMessage";
 
 interface Props {
@@ -18,7 +18,6 @@ export const Input: React.FunctionComponent<Props> = ({
   const { register } = useFormContext();
   return (
     <>
-      {/* <div className="container"> */}
       <div className="wrapper">
         <input
           type={type != null ? type : "text"}
@@ -90,7 +89,7 @@ export const Input: React.FunctionComponent<Props> = ({
         }
 
         input:focus + label .label-content,
-        input:not(:placeholder-shown) + label .label-content {
+        input:not(:placeholder-shown) + input::placeholder {
           transform: translateY(-120%);
           font-size: 14px;
           color: ${primaryColor.light.color};
@@ -102,6 +101,5 @@ export const Input: React.FunctionComponent<Props> = ({
         }
       `}</style>
     </>
-    // </div>
   );
 };
