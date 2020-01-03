@@ -1,6 +1,12 @@
 const withSourceMaps = require("@zeit/next-source-maps");
-module.exports = withSourceMaps({
-  webpack(config) {
-    return config;
-  },
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
 });
+
+module.exports = withBundleAnalyzer(
+  withSourceMaps({
+    webpack(config) {
+      return config;
+    },
+  })
+);

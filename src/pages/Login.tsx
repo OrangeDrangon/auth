@@ -1,8 +1,10 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import axios, { AxiosResponse } from "axios";
-import { LoginBody, LoginSuccess, LoginError } from "./api/Login";
-
+import { LoginBody, LoginSuccess, LoginError } from "./api/login";
+import { validate as validateEmail } from "email-validator";
+import { useForm, ErrorMessage, FormContext, OnSubmit } from "react-hook-form";
+import { Input } from "../components/Input";
 interface Props {
   callbackUrl?: string;
   clientId?: string;
@@ -10,9 +12,36 @@ interface Props {
 }
 
 const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const methods = useForm();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const onSubmit = useCallback(
+    async (data: Record<string, any>) => {
+      const { email, password } = (data as unknown) as Pick<
+        LoginBody,
+        "email" | "password"
+      >;
+      try {
+        const response = await axios.post<
+          LoginBody,
+          AxiosResponse<LoginSuccess>
+        >("/api/login", {
+          email,
+          password,
+          callbackUrl,
+          clientId,
+          code,
+        });
+        window.location.assign(`${callbackUrl}?token=${response.data.token}`);
+      } catch (error) {
+        if (error.response != null) {
+          const response: AxiosResponse<LoginError> = error.response;
+          setErrorMessage(response?.data.error);
+        }
+      }
+    },
+    [callbackUrl, clientId, code]
+  );
 
   if (callbackUrl == null) {
     return (
@@ -38,44 +67,21 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
   }
 
   return (
-    <form
-      onSubmit={async (event) => {
-        event.preventDefault();
-        try {
-          const response = await axios.post<
-            LoginBody,
-            AxiosResponse<LoginSuccess>
-          >("/api/login", {
-            email,
-            password,
-            callbackUrl,
-            clientId,
-            code,
-          });
-          window.location.assign(`${callbackUrl}?token=${response.data.token}`);
-        } catch (error) {
-          if (error.response != null) {
-            const response: AxiosResponse<LoginError> = error.response;
-            setErrorMessage(response?.data.error);
+    <FormContext {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        {errorMessage != null ? <div>{errorMessage}</div> : null}
+        <Input
+          name="email"
+          placeholder="Email"
+          validate={(email) =>
+            validateEmail(email) || "Please enter a valid email."
           }
-        }
-      }}
-    >
-      {errorMessage != null ? <div>{errorMessage}</div> : null}
-      <input
-        type="text"
-        onChange={(event) => {
-          setEmail(event.target.value);
-        }}
-      />
-      <input
-        type="password"
-        onChange={(event) => {
-          setPassword(event.target.value);
-        }}
-      />
-      <input type="submit" />
-    </form>
+        />
+        <Input name="password" placeholder="Password" type="password" />
+
+        <input type="submit" />
+      </form>
+    </FormContext>
   );
 };
 
