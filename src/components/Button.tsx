@@ -1,54 +1,46 @@
 import React from "react";
-import { useFormContext } from "react-hook-form";
 import { secondaryColor } from "../utils/theme";
 
+type ButtonProps = JSX.IntrinsicElements["button"];
+
 interface Props {
-  text: string;
+  cover?: boolean;
 }
 
-export const SubmitButton: React.FunctionComponent<Props> = ({ text }) => {
-  const { errors } = useFormContext();
+export const Button: React.FunctionComponent<React.PropsWithChildren<
+  Props & ButtonProps
+>> = ({ children, cover, ...props }) => {
   return (
     <div className="container">
-      <div className="wrapper">
-        <button type="submit" disabled={Object.values(errors).length > 0}>
-          <span className="cover"></span>
-          <span className="text">{text}</span>
-        </button>
-      </div>
+      <button type="submit" {...props}>
+        {cover != null && cover && <span className="cover"></span>}
+        {children}
+      </button>
       <style jsx>{`
         .container {
-          height: 30px;
-          width: 60px;
-          margin-top: 10px;
           overflow: hidden;
-        }
-
-        .wrapper {
-          height: 100%;
-          width: 100%;
           position: relative;
         }
 
         button {
-          border-radius: 5px;
           outline: none;
-          border: 1px solid black;
-          background-color: ${secondaryColor};
-          color: white;
-          width: 100%;
+          padding: 10px;
           height: 100%;
-          position: absolute;
+          width: 100%;
+          border: none;
+          background-color: ${secondaryColor.color};
+          color: white;
           left: 0px;
           bottom: 0px;
           transition: all 0.3s ease;
+          cursor: pointer;
         }
 
         .cover {
           height: 100%;
           width: 100%;
           background-color: black;
-          opacity: 0%;
+          opacity: 0.2;
           position: absolute;
           left: 0px;
           bottom: 0px;
@@ -59,7 +51,6 @@ export const SubmitButton: React.FunctionComponent<Props> = ({ text }) => {
         button:disabled {
           cursor: not-allowed;
           border: none;
-          border-radius: 0;
         }
 
         button:disabled .cover {

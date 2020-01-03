@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { errorColor } from "../utils/theme";
+import { secondaryColor } from "../utils/theme";
 import { useMemo } from "react";
 
 interface Props {
@@ -17,13 +17,16 @@ interface Errors {
 
 export const ErrorMessage: React.FunctionComponent<Props> = ({ name }) => {
   const { errors } = useFormContext();
-  const error = useMemo(() => ((errors as unknown) as Errors)[name], [errors]);
+  const error = useMemo(() => ((errors as unknown) as Errors)[name], [
+    errors[name],
+  ]);
   return (
     <span className="error">
       {error != null ? error.message : "Secret hidden messages"}
       <style jsx>{`
         .error {
-          color: ${error != null ? errorColor : "white"};
+          color: ${secondaryColor.light.color};
+          opacity: ${error != null ? 1 : 0};
           font-size: 14px;
         }
       `}</style>

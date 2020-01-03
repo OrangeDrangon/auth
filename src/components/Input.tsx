@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { secondaryColor } from "../utils/theme";
+import { secondaryColor, primaryColor } from "../utils/theme";
 import { ErrorMessage } from "./ErrorMessage";
 
 interface Props {
@@ -15,52 +15,49 @@ export const Input: React.FunctionComponent<Props> = ({
   type,
   validate,
 }) => {
-  const { register, errors, watch } = useFormContext();
-  const value: string = watch(name) || "";
+  const { register } = useFormContext();
   return (
-    <div className="container">
+    <>
+      {/* <div className="container"> */}
       <div className="wrapper">
-        <div className="container-input">
-          <input
-            className={value.length > 0 ? "has-content" : ""}
-            type={type != null ? type : "text"}
-            name={name}
-            ref={register({ required: `Please enter a ${name}.`, validate })}
-          />
-          {placeholder != null ? (
-            <label htmlFor="name">
-              <span className="label-content">{placeholder}</span>
-            </label>
-          ) : null}
-        </div>
+        <input
+          type={type != null ? type : "text"}
+          name={name}
+          required={true}
+          placeholder=" "
+          ref={register({ required: `Please enter a ${name}.`, validate })}
+        />
+        {placeholder != null ? (
+          <label htmlFor="name">
+            <span className="label-content">{placeholder}</span>
+          </label>
+        ) : null}
       </div>
       <ErrorMessage name={name} />
       <style jsx>{`
         .container {
+          width: 100%;
           display: flex;
           flex-flow: column;
-          width: 50%;
-          overflow: hidden;
-          margin-top: 10px;
         }
 
         .wrapper {
+          position: relative;
+          width 100%;
           height: 50px;
-          width: 100%;
-        }
-
-        .container-input {
-          position relative;
-          height: 100%;
-          width: 100%:
+          overflow: hidden;
         }
 
         input {
-          width: 100%;
-          height: 100%;
-          padding-top 20px;
           border: none;
           outline: none;
+          position: absolute;
+          bottom: 0px;
+          left: 0px;
+          width: 100%;
+          height: 100%;
+          padding-top: 25px;
+          padding-bottom: 5px
         }
 
         label {
@@ -80,7 +77,7 @@ export const Input: React.FunctionComponent<Props> = ({
           bottom: -1px;
           height: 100%;
           width: 100%;
-          border-bottom: 3px solid ${secondaryColor};
+          border-bottom: 3px solid ${primaryColor.light.color};
           transform: translateX(-100%);
           transition: transform 0.3s ease;
         }
@@ -93,17 +90,18 @@ export const Input: React.FunctionComponent<Props> = ({
         }
 
         input:focus + label .label-content,
-        .has-content + label .label-content {
-          transform: translateY(-150%);
+        input:not(:placeholder-shown) + label .label-content {
+          transform: translateY(-120%);
           font-size: 14px;
-          color: ${secondaryColor};
+          color: ${primaryColor.light.color};
         }
 
         input:focus + label::after,
-        .has-content + label::after {
+        input:not(:placeholder-shown) + label::after {
           transform: translateX(0%);
         }
       `}</style>
-    </div>
+    </>
+    // </div>
   );
 };

@@ -1,16 +1,15 @@
 import { NextPage } from "next";
 import { useState, useCallback } from "react";
 import request from "superagent";
-import {
-  LoginBody,
-  LoginSuccess,
-  LoginError,
-  LoginResponse,
-} from "./api/login";
+import { LoginBody, LoginSuccess, LoginError } from "./api/login";
 import { validate as validateEmail } from "email-validator";
-import { useForm, ErrorMessage, FormContext, OnSubmit } from "react-hook-form";
+import { useForm, FormContext } from "react-hook-form";
 import { Input } from "../components/Input";
-import { SubmitButton } from "../components/SubmitButton";
+import { Header } from "../components/Header";
+import { Button } from "../components/Button";
+import Link from "next/link";
+import { primaryColor } from "../utils/theme";
+
 interface Props {
   callbackUrl?: string;
   clientId?: string;
@@ -18,7 +17,7 @@ interface Props {
 }
 
 const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
-  const methods = useForm();
+  const methods = useForm({ reValidateMode: "onChange" });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onSubmit = useCallback(
@@ -72,36 +71,67 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
   }
 
   return (
-    <FormContext {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <h1>Login</h1>
-        {errorMessage != null ? <div>{errorMessage}</div> : null}
-        <Input
-          name="email"
-          placeholder="Email"
-          validate={(email) =>
-            validateEmail(email) || "Please enter a valid email."
-          }
-        />
-        <Input name="password" placeholder="Password" type="password" />
-        <SubmitButton text="Login" />
+    <Header>
+      <FormContext {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={true}>
+          <h1>Login</h1>
+          {errorMessage != null ? <div>{errorMessage}</div> : null}
+          <Input
+            name="email"
+            type="email"
+            placeholder="Email"
+            validate={(email) =>
+              validateEmail(email) || "Please enter a valid email."
+            }
+          />
+          <Input name="password" placeholder="Password" type="password" />
 
-        <style jsx>{`
-          form {
-            display: flex;
-            flex-flow: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-          }
+          <div className="buttons">
+            <Button
+              type="submit"
+              cover={true}
+              disabled={Object.keys(methods.errors).length > 0}
+            >
+              Login
+            </Button>
+            <div className="fill"></div>
+            <Link href="/register">
+              <Button
+                style={{
+                  textDecoration: "underline",
+                  backgroundColor: primaryColor.dark.color,
+                }}
+              >
+                Register
+              </Button>
+            </Link>
+          </div>
 
-          h1 {
-            font-size: 32px;
-          }
-        `}</style>
-      </form>
-    </FormContext>
+          <style jsx>{`
+            form {
+              display: flex;
+              flex-flow: column;
+              justify-content: center;
+              align-items: center;
+            }
+
+            h1 {
+              font-size: 32px;
+            }
+
+            .buttons {
+              display: flex;
+              flex-flow: row-reverse;
+              width: 100%;
+            }
+
+            .fill {
+              flex: 1;
+            }
+          `}</style>
+        </form>
+      </FormContext>
+    </Header>
   );
 };
 
