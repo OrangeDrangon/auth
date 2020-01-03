@@ -1,10 +1,16 @@
 import { NextPage } from "next";
 import { useState, useCallback } from "react";
-import axios, { AxiosResponse } from "axios";
-import { LoginBody, LoginSuccess, LoginError } from "./api/login";
+import request from "superagent";
+import {
+  LoginBody,
+  LoginSuccess,
+  LoginError,
+  LoginResponse,
+} from "./api/login";
 import { validate as validateEmail } from "email-validator";
 import { useForm, ErrorMessage, FormContext, OnSubmit } from "react-hook-form";
 import { Input } from "../components/Input";
+import { SubmitButton } from "../components/SubmitButton";
 interface Props {
   callbackUrl?: string;
   clientId?: string;
@@ -22,21 +28,20 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
         "email" | "password"
       >;
       try {
-        const response = await axios.post<
-          LoginBody,
-          AxiosResponse<LoginSuccess>
-        >("/api/login", {
-          email,
-          password,
-          callbackUrl,
-          clientId,
-          code,
-        });
-        window.location.assign(`${callbackUrl}?token=${response.data.token}`);
+        const { body }: { body: LoginSuccess } = await request
+          .post("/api/login")
+          .send({
+            email,
+            password,
+            callbackUrl,
+            clientId,
+            code,
+          });
+        window.location.assign(`${callbackUrl}?token=${body.token}`);
       } catch (error) {
-        if (error.response != null) {
-          const response: AxiosResponse<LoginError> = error.response;
-          setErrorMessage(response?.data.error);
+        const { response }: { response?: { body: LoginError } } = error;
+        if (response != null) {
+          setErrorMessage(response.body.error);
         }
       }
     },
@@ -69,6 +74,7 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
   return (
     <FormContext {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <h1>Login</h1>
         {errorMessage != null ? <div>{errorMessage}</div> : null}
         <Input
           name="email"
@@ -78,8 +84,22 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
           }
         />
         <Input name="password" placeholder="Password" type="password" />
+        <SubmitButton text="Login" />
 
-        <input type="submit" />
+        <style jsx>{`
+          form {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+          }
+
+          h1 {
+            font-size: 32px;
+          }
+        `}</style>
       </form>
     </FormContext>
   );

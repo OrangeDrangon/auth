@@ -5,8 +5,8 @@ function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {
       <style global jsx>
         {`
           html,
-          body {
-            margin: 0;
+          body,
+          #__next {
             height: 100vh;
             width: 100vw;
           }
@@ -20,6 +20,10 @@ function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {
           }
           * {
             font-family: "Roboto", sans-serif;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
           }
         `}
       </style>

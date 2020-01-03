@@ -56,7 +56,7 @@ export default async (
             errorMessage.push("Invalid Client Id or Callback URL.");
             break;
           case 2:
-            errorMessage.push("Invalid code method.");
+            errorMessage.push("Invalid code type.");
             break;
           default:
             break;
