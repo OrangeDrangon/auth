@@ -13,7 +13,7 @@ export const HeaderFooter: React.FunctionComponent<React.PropsWithChildren<
   return (
     <div className="container">
       <header>
-        <img src="/images/neptune.png" alt="" className="neptune" />
+        <img src="/images/neptune.webp" alt="" className="neptune" />
         <h1>kmr.pw</h1>
         <div className="fill"></div>
         <a
@@ -46,7 +46,7 @@ export const HeaderFooter: React.FunctionComponent<React.PropsWithChildren<
         }
 
         .neptune {
-          height: 40px;
+          height: 30px;
           margin: 10px;
         }
 

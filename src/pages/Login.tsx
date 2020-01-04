@@ -112,16 +112,22 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
                 Login
               </Button>
               <div className="fill"></div>
-              <Link href="/register">
-                <Button
-                  style={{
-                    textDecoration: "underline",
-                    backgroundColor: primaryColor.dark.color,
-                  }}
-                >
-                  Register
-                </Button>
-              </Link>
+              <Button
+                style={{
+                  backgroundColor: primaryColor.dark.color,
+                }}
+              >
+                <Link href="/register">
+                  <span
+                    style={{
+                      color: primaryColor.dark.text,
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Register
+                  </span>
+                </Link>
+              </Button>
             </div>
 
             <style jsx>{`
