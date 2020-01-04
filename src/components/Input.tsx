@@ -89,7 +89,7 @@ export const Input: React.FunctionComponent<Props> = ({
         }
 
         input:focus + label .label-content,
-        input:not(:placeholder-shown) + input::placeholder {
+        input:not(:placeholder-shown) + label .label-content {
           transform: translateY(-120%);
           font-size: 14px;
           color: ${primaryColor.light.color};

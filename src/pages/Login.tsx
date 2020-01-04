@@ -77,7 +77,19 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
         style: { alignSelf: "center", justifyContent: "center" },
       }}
     >
-      <Card header={<h1>Login</h1>}>
+      <Card
+        header={
+          <h1>
+            Login
+            <style jsx>{`
+              h1 {
+                margin-top: 30px;
+                font-size: 48px;
+              }
+            `}</style>
+          </h1>
+        }
+      >
         <FormContext {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={true}>
             {errorMessage != null ? <div>{errorMessage}</div> : null}
@@ -119,16 +131,30 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
                 justify-content: center;
                 align-items: center;
                 width: 300px;
+                margin: 15px 30px 30px 30px;
               }
 
               .buttons {
                 display: flex;
                 flex-flow: row-reverse;
                 width: 100%;
+                margin-top: 15px;
               }
 
               .fill {
                 flex: 1;
+              }
+
+              @media only screen and (max-width: 500px) {
+                form {
+                  margin 0 15px 15px 15px;
+                }
+
+                @media only screen and (max-width: 340px) {
+                  form {
+                    margin 0 0px 0px 0px;
+                  }
+
               }
             `}</style>
           </form>

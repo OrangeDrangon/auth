@@ -25,6 +25,8 @@ export const Card: React.FunctionComponent<React.PropsWithChildren<Props>> = ({
           width: fit-content;
           height: fit-content;
           overflow-x: auto;
+          justify-content: center;
+          align-items: center;
         }
 
         .card:hover {
