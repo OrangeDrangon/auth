@@ -3,13 +3,14 @@ import { useState, useCallback } from "react";
 import request from "superagent";
 import { LoginBody, LoginSuccess, LoginError } from "./api/login";
 import { validate as validateEmail } from "email-validator";
-import { useForm, FormContext } from "react-hook-form";
 import { Input } from "../components/Input";
 import { HeaderFooter } from "../components/HeaderFooter";
 import { Button } from "../components/Button";
 import Link from "next/link";
 import { primaryColor } from "../utils/theme";
-import { Card } from "../components/Card";
+import { Form } from "../components/Form";
+import { SubmitButton } from "../components/SubmitButton";
+import { FlexSpacer } from "../components/FlexSpacer";
 
 interface Props {
   callbackUrl?: string;
@@ -18,8 +19,7 @@ interface Props {
 }
 
 const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
-  const methods = useForm({ reValidateMode: "onChange" });
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   const onSubmit = useCallback(
     async (data: Record<string, any>) => {
@@ -77,95 +77,47 @@ const LoginPage: NextPage<Props> = ({ callbackUrl, clientId, code }) => {
         style: { alignSelf: "center", justifyContent: "center" },
       }}
     >
-      <Card
-        header={
-          <h1>
-            Login
-            <style jsx>{`
-              h1 {
-                margin-top: 30px;
-                font-size: 48px;
-              }
-            `}</style>
-          </h1>
-        }
+      <Form
+        errorMessage={errorMessage}
+        onSubmit={onSubmit}
+        header={<h1 style={{ marginTop: "30px", fontSize: "48px" }}>Login</h1>}
       >
-        <FormContext {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={true}>
-            {errorMessage != null ? <div>{errorMessage}</div> : null}
-            <Input
-              name="email"
-              type="email"
-              placeholder="Email"
-              validate={(email) =>
-                validateEmail(email) || "Please enter a valid email."
-              }
-            />
-            <Input name="password" placeholder="Password" type="password" />
+        <Input
+          name="email"
+          type="email"
+          placeholder="Email"
+          validate={(email) =>
+            validateEmail(email) || "Please enter a valid email."
+          }
+        />
+        <Input name="password" placeholder="Password" type="password" />
 
-            <div className="buttons">
-              <Button
-                type="submit"
-                cover={true}
-                disabled={Object.keys(methods.errors).length > 0}
-              >
-                Login
-              </Button>
-              <div className="fill"></div>
+        <div className="buttons">
+          <SubmitButton>Login</SubmitButton>
+          <FlexSpacer />
+          <Link href="/register">
+            <a>
               <Button
                 style={{
-                  backgroundColor: primaryColor.dark.color,
+                  backgroundColor: primaryColor.light.color,
+                  color: primaryColor.light.text,
+                  textDecoration: "underline",
                 }}
               >
-                <Link href="/register">
-                  <span
-                    style={{
-                      color: primaryColor.dark.text,
-                      textDecoration: "underline",
-                    }}
-                  >
-                    Register
-                  </span>
-                </Link>
+                Register
               </Button>
-            </div>
-
-            <style jsx>{`
-              form {
-                display: flex;
-                flex-flow: column;
-                justify-content: center;
-                align-items: center;
-                width: 300px;
-                margin: 15px 30px 30px 30px;
-              }
-
-              .buttons {
-                display: flex;
-                flex-flow: row-reverse;
-                width: 100%;
-                margin-top: 15px;
-              }
-
-              .fill {
-                flex: 1;
-              }
-
-              @media only screen and (max-width: 500px) {
-                form {
-                  margin 0 15px 15px 15px;
-                }
-
-                @media only screen and (max-width: 340px) {
-                  form {
-                    margin 0 0px 0px 0px;
-                  }
-
-              }
-            `}</style>
-          </form>
-        </FormContext>
-      </Card>
+            </a>
+          </Link>
+        </div>
+      </Form>
+      <style jsx>{`
+        .buttons {
+          display: flex;
+          flex-flow: row-reverse;
+          width: 100%;
+          margin-top: 15px;
+        }
+      `}</style>
     </HeaderFooter>
   );
 };

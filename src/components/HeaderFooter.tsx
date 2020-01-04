@@ -1,5 +1,6 @@
 import React from "react";
 import { primaryColor } from "../utils/theme";
+import { FlexSpacer } from "./FlexSpacer";
 
 type SectionProps = JSX.IntrinsicElements["section"];
 
@@ -15,7 +16,7 @@ export const HeaderFooter: React.FunctionComponent<React.PropsWithChildren<
       <header>
         <img src="/images/neptune.webp" alt="" className="neptune" />
         <h1>kmr.pw</h1>
-        <div className="fill"></div>
+        <FlexSpacer />
         <a
           className="github"
           href="https://www.github.com/OrangeDrangon/auth"
@@ -52,10 +53,6 @@ export const HeaderFooter: React.FunctionComponent<React.PropsWithChildren<
 
         h1 {
           font-size: 20px;
-        }
-
-        .fill {
-          flex: 1;
         }
 
         .github {

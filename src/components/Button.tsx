@@ -10,10 +10,37 @@ interface Props {
 export const Button: React.FunctionComponent<React.PropsWithChildren<
   Props & ButtonProps
 >> = ({ children, cover, ...props }) => {
+  if (!cover) {
+    return (
+      <button type="submit" {...props}>
+        {children}
+        <style jsx>{`
+          button {
+            outline: none;
+            padding: 10px;
+            height: 100%;
+            width: 100%;
+            border: none;
+            background-color: ${secondaryColor.color};
+            color: white;
+            left: 0px;
+            bottom: 0px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+          }
+
+          button:disabled {
+            cursor: not-allowed;
+            border: none;
+          }
+        `}</style>
+      </button>
+    );
+  }
   return (
     <div className="container">
       <button type="submit" {...props}>
-        {cover != null && cover && <span className="cover"></span>}
+        <span className="cover"></span>
         {children}
       </button>
       <style jsx>{`
